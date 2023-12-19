@@ -49,7 +49,6 @@ app.post('/posts', async (req, res, next) => {
   }
 });
 
-// GET para las rutas no declaradas
 app.use('*', (req, res) => {
-  res.json({ ok: false, result: '404 Pagina no Encontrada' });
+  res.json({ ok: false, result: 'Pagina no Encontrada' });
 });
