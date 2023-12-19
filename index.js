@@ -24,8 +24,13 @@ app.get("/posts", async (req, res) => {
 
 // Post para agregar registros
 app.post("/posts", async (req, res) => {
-  const { title, imgSrc, description, likes } = req.body;
-  console.log("Value of req.body in the /posts route: ", req.body);
-  await addPost({ title, img: imgSrc, description, likes });
-  res.send("Post added successfully");
+  const { titulo, img, descripcion, likes } = req.body; 
+  console.log("valor req.body en la ruta /posts: ", req.body);
+  try {
+    await addPost({ titulo, img, descripcion, likes });
+    res.send("posts agregado con éxito");
+  } catch (error) {
+    console.error("Error al procesar la solicitud POST:", error.message);
+    res.status(500).send("Error al procesar la solicitud POST");
+  }
 });
