@@ -1,6 +1,7 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+// Conexion pool
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
@@ -10,34 +11,35 @@ const pool = new Pool({
 });
 
 const addPost = async ({ titulo, img, descripcion, likes }) => {
-  console.log("Entró addPost: ", titulo, img, descripcion, likes);
-  const query = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *";
+  console.log("Entro agregarPost: ", titulo, img, descripcion, likes);
+  const consulta =
+    "INSERT INTO posts (titulo, img, descripcion, likes) VALUES ($1, $2, $3, $4) RETURNING *";
   const values = [titulo, img, descripcion, likes];
-  
   try {
-    const result = await pool.query(query, values);
-    console.log("---------------------------------------------------------------");
+    const result = await pool.query(consulta, values);
     console.log("Post agregado");
-    console.log("Objeto devuelto de la consulta: ", result);
+    console.log("Objeto devuelto de la consulta: ", result.rows[0]);
     console.log("Filas procesadas: ", result.rowCount);
-    console.log("Información ingresada: ", result.rows[0]);
-    console.log("----------------------------------------------------------------");
   } catch (error) {
     console.error("Error al agregar el post:", error.message);
-    throw error;
   }
 };
 
-const viewPosts = async () => {
+// Contenido tabla
+const getPosts = async () => {
   try {
-    const { rows, command, rowCount, fields } = await pool.query("SELECT * FROM posts");
+    const { rows, command, rowCount, fields } = await pool.query(
+      "SELECT * FROM posts"
+    );
     console.log("----------------------------------------------");
-    console.log("Posts registrados en la tabla");
+    console.log("Post registrados en la tabla");
     console.log("Instrucción procesada: ", command);
     console.log("Filas procesadas: ", rowCount);
     console.log("Contenido procesado: ", rows);
     console.log("Campos procesados: ", fields);
     console.log("----------------------------------------------");
+
+    // Devolvemos resultados y sacamos las funciones a exportar
     return rows;
   } catch (error) {
     console.error("Error al obtener los posts:", error.message);
@@ -45,4 +47,4 @@ const viewPosts = async () => {
   }
 };
 
-export { addPost, viewPosts };
+export { addPost, getPosts };
